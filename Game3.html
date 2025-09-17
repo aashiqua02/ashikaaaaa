@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maze Escape - 10 Levels</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #74ebd5, #ACB6E5);
+    margin: 0;
+    padding: 0;
+  }
+  h1, h2 { color: #333; margin: 10px; }
+  #instructions {
+    max-width: 500px;
+    text-align: center;
+    background-color: #fff8;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  #maze { display: grid; gap: 2px; margin-bottom: 20px; }
+  .cell { width: 30px; height: 30px; background-color: #fff; }
+  .wall { background-color: #333; }
+  .start { background-color: #4CAF50; }
+  .finish { background-color: #f44336; }
+  .player { background-color: #FFD700; }
+  button { padding: 10px 20px; margin: 5px; font-size: 16px; cursor: pointer; border-radius: 5px; }
+  #shareBtn { background-color: #4CAF50; color: white; border: none; }
+  #restartBtn { background-color: #f44336; color: white; border: none; }
+</style>
+</head>
+<body>
+<h1>Maze Escape</h1>
+<div id="instructions">
+  <h2>How to Play:</h2>
+  <p>Use the <strong>arrow keys</strong> (↑ ↓ ← →) to move the yellow player square from the green start square to the red finish square.</p>
+  <p>Complete all <strong>10 levels</strong> to win the game. Each level gets progressively harder!</p>
+</div>
+<h2>Level <span id="level">1</span> / 10</h2>
+<div id="maze"></div>
+<button id="restartBtn">Restart Level</button>
+<button id="shareBtn">See How This Game Was Made</button>
+
+<script>
+const levels = [
+  // Level 1
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,0,0,0,0,0,3,1],
+    [1,1,1,0,1,1,1,0,1,1],
+    [1,0,0,0,0,0,1,0,0,1],
+    [1,0,1,1,1,0,1,1,0,1],
+    [1,0,0,0,1,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ],
+  // Level 2
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,0,1,0,0,0,3,1],
+    [1,0,1,0,1,0,1,0,1,1],
+    [1,0,1,0,0,0,1,0,0,1],
+    [1,0,1,1,1,0,1,1,0,1],
+    [1,0,0,0,1,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ],
+  // Level 3
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,0,0,1,0,0,3,1],
+    [1,0,1,1,0,1,0,1,1,1],
+    [1,0,1,0,0,0,0,1,0,1],
+    [1,0,1,0,1,1,0,1,0,1],
+    [1,0,0,0,1,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ],
+  // Level 4
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,1,0,0,1,0,3,1],
+    [1,0,1,0,1,0,1,0,1,1],
+    [1,0,1,0,0,0,0,0,0,1],
+    [1,0,0,0,1,1,1,1,0,1],
+    [1,0,1,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ],
+  // Level 5
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,1,0,0,1,0,3,1],
+    [1,0,1,0,1,0,1,0,1,1],
+    [1,0,1,0,0,0,0,0,0,1],
+    [1,0,0,0,1,1,1,1,0,1],
+    [1,0,1,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ],
+  // Level 6
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,1,0,1,0,0,3,1],
+    [1,0,1,0,1,0,1,1,0,1],
+    [1,0,0,0,0,0,0,1,0,1],
+    [1,1,1,1,1,0,1,1,0,1],
+    [1,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ],
+  // Level 7
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,0,1,0,1,0,3,1],
+    [1,0,1,0,1,0,1,0,1,1],
+    [1,0,1,0,0,0,0,0,0,1],
+    [1,0,1,1,1,1,1,1,0,1],
+    [1,0,0,0,0,0,0,1,0,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ],
+  // Level 8
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,1,0,1,0,0,3,1],
+    [1,0,1,0,1,0,1,0,1,1],
+    [1,0,1,0,0,0,0,0,0,1],
+    [1,0,1,1,1,1,1,1,0,1],
+    [1,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ],
+  // Level 9 - fixed, no dead ends
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,1,0,1,0,1,0,1],
+    [1,0,0,1,0,1,0,0,0,1],
+    [1,1,0,1,0,0,0,1,0,1],
+    [1,0,0,0,0,1,0,1,0,1],
+    [1,0,1,1,0,0,0,0,3,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ],
+  // Level 10 - hardest
+  [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,1,0,1,0,1,0,1],
+    [1,0,1,0,0,1,0,0,0,1],
+    [1,0,1,0,1,1,1,1,0,1],
+    [1,0,0,0,0,0,0,1,0,1],
+    [1,1,1,1,1,1,0,0,3,1],
+    [1,1,1,1,1,1,1,1,1,1]
+  ]
+];
+
+let currentLevel = 0;
+let playerPos = {x:0, y:0};
+const mazeDiv = document.getElementById('maze');
+const levelSpan = document.getElementById('level');
+const restartBtn = document.getElementById('restartBtn');
+const shareBtn = document.getElementById('shareBtn');
+
+function loadLevel(level) {
+  const maze = levels[level];
+  mazeDiv.innerHTML = '';
+  mazeDiv.style.gridTemplateColumns = `repeat(${maze[0].length}, 30px)`;
+  mazeDiv.style.gridTemplateRows = `repeat(${maze.length}, 30px)`;
+
+  for (let y=0; y<maze.length; y++) {
+    for (let x=0; x<maze[y].length; x++) {
+      const cellDiv = document.createElement('div');
+      cellDiv.classList.add('cell');
+      if(maze[y][x] === 1) cellDiv.classList.add('wall');
+      if(maze[y][x] === 2) playerPos = {x, y};
+      if(maze[y][x] === 2) cellDiv.classList.add('start');
+      if(maze[y][x] === 3) cellDiv.classList.add('finish');
+      cellDiv.id = `cell-${x}-${y}`;
+      mazeDiv.appendChild(cellDiv);
+    }
+  }
+  drawPlayer();
+  levelSpan.textContent = currentLevel + 1;
+}
+
+function drawPlayer() {
+  document.querySelectorAll('.player').forEach(el => el.classList.remove('player'));
+  const playerCell = document.getElementById(`cell-${playerPos.x}-${playerPos.y}`);
+  if(playerCell) playerCell.classList.add('player');
+}
+
+function movePlayer(dx, dy) {
+  const maze = levels[currentLevel];
+  const newX = playerPos.x + dx;
+  const newY = playerPos.y + dy;
+  if(maze[newY][newX] !== 1) {
+    playerPos = {x: newX, y: newY};
+    drawPlayer();
+    if(maze[newY][newX] === 3) {
+      if(currentLevel === levels.length - 1){
+        alert('Congratulations! You completed all levels!');
+        currentLevel = 0;
+      } else {
+        alert('Level Completed!');
+        currentLevel++;
+      }
+      loadLevel(currentLevel);
+    }
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowUp') movePlayer(0, -1);
+  if(e.key === 'ArrowDown') movePlayer(0, 1);
+  if(e.key === 'ArrowLeft') movePlayer(-1, 0);
+  if(e.key === 'ArrowRight') movePlayer(1, 0);
+});
+
+restartBtn.addEventListener('click', () => loadLevel(currentLevel));
+
+// Share button
+shareBtn.addEventListener('click', () => {
+  window.open('https://chatgpt.com/share/68ca55cf-bcd0-8003-8f6a-9e0c2f76ac56', '_blank'); // replace with your chat link if needed
+});
+
+// Start game
+loadLevel(currentLevel);
+</script>
+</body>
+</html>
