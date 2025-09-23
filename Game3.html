@@ -1,54 +1,189 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maze Escape - 10 Levels</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Maze Escape — 10 Levels (Game3)</title>
 <style>
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #74ebd5, #ACB6E5);
-    margin: 0;
-    padding: 0;
+  :root{
+    --cell-size: 36px;
+    --gap: 3px;
+    --bg1: linear-gradient(135deg,#74ebd5,#ACB6E5);
+    --wall: #222;
+    --path: #fff;
+    --start: #3fc35f;
+    --finish: #ff5b5b;
+    --player: #ffd24d;
+    --ui-bg: rgba(255,255,255,0.9);
   }
-  h1, h2 { color: #333; margin: 10px; }
-  #instructions {
-    max-width: 500px;
-    text-align: center;
-    background-color: #fff8;
-    padding: 10px 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+  @media (max-width:720px){ :root{ --cell-size:28px } }
+  @media (min-width:1200px){ :root{ --cell-size:42px } }
+
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: Inter,system-ui,Segoe UI,Roboto,Arial, sans-serif;
+    background: var(--bg1);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    color:#111;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:24px;
   }
-  #maze { display: grid; gap: 2px; margin-bottom: 20px; }
-  .cell { width: 30px; height: 30px; background-color: #fff; }
-  .wall { background-color: #333; }
-  .start { background-color: #4CAF50; }
-  .finish { background-color: #f44336; }
-  .player { background-color: #FFD700; }
-  button { padding: 10px 20px; margin: 5px; font-size: 16px; cursor: pointer; border-radius: 5px; }
-  #shareBtn { background-color: #4CAF50; color: white; border: none; }
-  #restartBtn { background-color: #f44336; color: white; border: none; }
+
+  .container{
+    width:100%;
+    max-width:960px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.80));
+    border-radius:12px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.18);
+    padding:18px;
+  }
+
+  header{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  h1{ margin:0; font-size:20px; letter-spacing:0.2px; }
+  .meta { text-align:right; font-size:14px; color:#333; }
+
+  #instructions{
+    margin:12px 0;
+    background:var(--ui-bg);
+    padding:12px;
+    border-radius:8px;
+    font-size:14px;
+    line-height:1.35;
+  }
+
+  #game-area{
+    display:flex;
+    gap:18px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+
+  #maze {
+    display:grid;
+    gap: var(--gap);
+    background:transparent;
+    padding:8px;
+    border-radius:8px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .cell{
+    width: var(--cell-size);
+    height: var(--cell-size);
+    box-sizing:border-box;
+    border-radius:4px;
+    background: var(--path);
+    transition: background .08s;
+  }
+  .wall{ background: var(--wall); }
+  .start{ background: var(--start); }
+  .finish{ background: var(--finish); }
+  .player{ background: var(--player); box-shadow: 0 0 0 3px rgba(255,255,255,0.06) inset; }
+
+  .controls{
+    min-width:220px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:center;
+  }
+  .level-info{ font-weight:600; }
+  .buttons{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  button{
+    cursor:pointer;
+    border:0;
+    padding:10px 12px;
+    border-radius:8px;
+    font-weight:600;
+    box-shadow:0 6px 16px rgba(0,0,0,0.12);
+    background: #1976d2;
+    color:white;
+  }
+  button.ghost{
+    background:transparent;
+    color:#1976d2;
+    box-shadow:none;
+    border:2px solid rgba(25,118,210,0.12);
+  }
+  .small{ padding:8px 10px; font-size:14px; }
+
+  .dpad{
+    display:grid;
+    grid-template-columns: repeat(3,44px);
+    gap:6px;
+    justify-items:center;
+    align-items:center;
+  }
+  .dpad button{ width:44px; height:44px; padding:0; border-radius:8px; background:#444; color:white; font-weight:700; }
+
+  footer{ margin-top:12px; text-align:center; font-size:13px; color:#333; opacity:0.9; }
+  .hint{ font-size:13px; color:#444; margin-top:6px; text-align:center; max-width:240px; }
 </style>
 </head>
 <body>
-<h1>Maze Escape</h1>
-<div id="instructions">
-  <h2>How to Play:</h2>
-  <p>Use the <strong>arrow keys</strong> (↑ ↓ ← →) to move the yellow player square from the green start square to the red finish square.</p>
-  <p>Complete all <strong>10 levels</strong> to win the game. Each level gets progressively harder!</p>
-</div>
-<h2>Level <span id="level">1</span> / 10</h2>
-<div id="maze"></div>
-<button id="restartBtn">Restart Level</button>
-<button id="shareBtn">See How This Game Was Made</button>
+  <div class="container" role="main">
+    <header>
+      <h1>Maze Escape</h1>
+      <div class="meta">
+        <div id="levelText">Level 1 / 10</div>
+        <div style="font-size:12px; color:#666">Use arrow keys or touch controls</div>
+      </div>
+    </header>
+
+    <div id="instructions">
+      <strong>How to play</strong>
+      <p>Move the yellow player square from the green START to the red FINISH using the arrow keys (↑ ↓ ← →) or the on-screen controls. Complete all <strong>10 levels</strong> to win. Each level increases in difficulty but has a guaranteed path.</p>
+      <p style="margin:6px 0 0 0">If a level behaves strangely, press <strong>Restart Level</strong>. To share this project, use the "Share / Chat" button and paste the chat link.</p>
+    </div>
+
+    <div id="game-area">
+      <div>
+        <div id="maze" aria-hidden="false"></div>
+      </div>
+
+      <aside class="controls" aria-label="game controls">
+        <div class="level-info" id="levelDisplay">Level 1</div>
+        <div class="buttons">
+          <button id="restartBtn" class="small">Restart Level</button>
+          <button id="prevBtn" class="small ghost">Prev</button>
+          <button id="nextBtn" class="small ghost">Next</button>
+        </div>
+
+        <div class="dpad" aria-hidden="false" style="margin-top:6px;">
+          <div></div>
+          <button id="upBtn">↑</button>
+          <div></div>
+          <button id="leftBtn">←</button>
+          <button id="downBtn">↓</button>
+          <button id="rightBtn">→</button>
+        </div>
+
+        <div class="hint">Tip: If arrow keys feel slow, use the on-screen arrows.</div>
+
+        <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; justify-content:center;">
+          <button id="shareBtn" class="small">Share / Chat</button>
+          <button id="helpBtn" class="small ghost">Instructions</button>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <small id="statusMsg"></small>
+    </footer>
+  </div>
 
 <script>
+/* Maze representation:
+   0 = path
+   1 = wall
+   2 = start
+   3 = finish
+   Grids are 7 rows x 10 cols
+*/
 const levels = [
-  // Level 1
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,0,0,0,0,0,3,1],
@@ -58,7 +193,6 @@ const levels = [
     [1,0,0,0,1,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1]
   ],
-  // Level 2
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,0,1,0,0,0,3,1],
@@ -68,7 +202,6 @@ const levels = [
     [1,0,0,0,1,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1]
   ],
-  // Level 3
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,0,0,1,0,0,3,1],
@@ -78,7 +211,6 @@ const levels = [
     [1,0,0,0,1,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1]
   ],
-  // Level 4
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,1,0,0,1,0,3,1],
@@ -88,7 +220,6 @@ const levels = [
     [1,0,1,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1]
   ],
-  // Level 5
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,1,0,0,1,0,3,1],
@@ -98,7 +229,6 @@ const levels = [
     [1,0,1,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1]
   ],
-  // Level 6
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,1,0,1,0,0,3,1],
@@ -108,7 +238,6 @@ const levels = [
     [1,0,0,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1]
   ],
-  // Level 7
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,0,1,0,1,0,3,1],
@@ -118,7 +247,6 @@ const levels = [
     [1,0,0,0,0,0,0,1,0,1],
     [1,1,1,1,1,1,1,1,1,1]
   ],
-  // Level 8
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,1,0,1,0,0,3,1],
@@ -128,7 +256,6 @@ const levels = [
     [1,0,0,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1]
   ],
-  // Level 9 - fixed, no dead ends
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,1,0,1,0,1,0,1],
@@ -138,7 +265,6 @@ const levels = [
     [1,0,1,1,0,0,0,0,3,1],
     [1,1,1,1,1,1,1,1,1,1]
   ],
-  // Level 10 - hardest
   [
     [1,1,1,1,1,1,1,1,1,1],
     [1,2,0,1,0,1,0,1,0,1],
@@ -151,75 +277,138 @@ const levels = [
 ];
 
 let currentLevel = 0;
-let playerPos = {x:0, y:0};
-const mazeDiv = document.getElementById('maze');
-const levelSpan = document.getElementById('level');
-const restartBtn = document.getElementById('restartBtn');
-const shareBtn = document.getElementById('shareBtn');
+let playerPos = {x:0,y:0};
+const mazeEl = document.getElementById('maze');
+const levelText = document.getElementById('levelText');
+const levelDisplay = document.getElementById('levelDisplay');
+const statusMsg = document.getElementById('statusMsg');
 
-function loadLevel(level) {
-  const maze = levels[level];
-  mazeDiv.innerHTML = '';
-  mazeDiv.style.gridTemplateColumns = `repeat(${maze[0].length}, 30px)`;
-  mazeDiv.style.gridTemplateRows = `repeat(${maze.length}, 30px)`;
+function isSolvable(grid){
+  const rows = grid.length, cols = grid[0].length;
+  let start=null, finish=null;
+  for(let y=0;y<rows;y++){
+    for(let x=0;x<cols;x++){
+      if(grid[y][x]===2) start={x,y};
+      if(grid[y][x]===3) finish={x,y};
+    }
+  }
+  if(!start||!finish) return false;
+  const seen = Array.from({length:rows}, ()=>Array(cols).fill(false));
+  const q=[start]; seen[start.y][start.x]=true;
+  const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+  while(q.length){
+    const {x,y}=q.shift();
+    if(x===finish.x && y===finish.y) return true;
+    for(const [dx,dy] of dirs){
+      const nx=x+dx, ny=y+dy;
+      if(ny>=0 && ny<rows && nx>=0 && nx<cols && !seen[ny][nx] && grid[ny][nx] !== 1){
+        seen[ny][nx]=true; q.push({x:nx,y:ny});
+      }
+    }
+  }
+  return false;
+}
 
-  for (let y=0; y<maze.length; y++) {
-    for (let x=0; x<maze[y].length; x++) {
-      const cellDiv = document.createElement('div');
-      cellDiv.classList.add('cell');
-      if(maze[y][x] === 1) cellDiv.classList.add('wall');
-      if(maze[y][x] === 2) playerPos = {x, y};
-      if(maze[y][x] === 2) cellDiv.classList.add('start');
-      if(maze[y][x] === 3) cellDiv.classList.add('finish');
-      cellDiv.id = `cell-${x}-${y}`;
-      mazeDiv.appendChild(cellDiv);
+(function validateAll(){
+  const bad=[];
+  for(let i=0;i<levels.length;i++) if(!isSolvable(levels[i])) bad.push(i+1);
+  if(bad.length){
+    console.warn('Unsolvable levels:', bad);
+    statusMsg.textContent = 'Warning: some levels failed internal solvability check. See console.';
+  } else statusMsg.textContent = 'All levels validated. Good to play!';
+})();
+
+function loadLevel(n){
+  const grid = levels[n];
+  if(!grid) return;
+  mazeEl.innerHTML = '';
+  const rows = grid.length, cols = grid[0].length;
+  mazeEl.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
+  mazeEl.style.gridTemplateRows = `repeat(${rows}, var(--cell-size))`;
+
+  for(let y=0;y<rows;y++){
+    for(let x=0;x<cols;x++){
+      const v = grid[y][x];
+      const d = document.createElement('div');
+      d.className = 'cell';
+      if(v===1) d.classList.add('wall');
+      if(v===2) { d.classList.add('start'); playerPos = {x,y}; }
+      if(v===3) d.classList.add('finish');
+      d.id = `cell-${x}-${y}`;
+      mazeEl.appendChild(d);
     }
   }
   drawPlayer();
-  levelSpan.textContent = currentLevel + 1;
+  levelText.textContent = `Level ${n+1} / ${levels.length}`;
+  levelDisplay.textContent = `Level ${n+1}`;
+  statusMsg.textContent = '';
 }
 
-function drawPlayer() {
+function drawPlayer(){
   document.querySelectorAll('.player').forEach(el => el.classList.remove('player'));
-  const playerCell = document.getElementById(`cell-${playerPos.x}-${playerPos.y}`);
-  if(playerCell) playerCell.classList.add('player');
+  const el = document.getElementById(`cell-${playerPos.x}-${playerPos.y}`);
+  if(el) el.classList.add('player');
 }
 
-function movePlayer(dx, dy) {
-  const maze = levels[currentLevel];
-  const newX = playerPos.x + dx;
-  const newY = playerPos.y + dy;
-  if(maze[newY][newX] !== 1) {
-    playerPos = {x: newX, y: newY};
-    drawPlayer();
-    if(maze[newY][newX] === 3) {
+function movePlayer(dx,dy){
+  const grid = levels[currentLevel];
+  const rows = grid.length, cols = grid[0].length;
+  const nx = playerPos.x + dx, ny = playerPos.y + dy;
+  if(ny < 0 || ny >= rows || nx < 0 || nx >= cols) return;
+  const cellVal = grid[ny][nx];
+  if(cellVal === 1) return;
+  playerPos = {x:nx, y:ny};
+  drawPlayer();
+  if(cellVal === 3){
+    setTimeout(() => {
       if(currentLevel === levels.length - 1){
-        alert('Congratulations! You completed all levels!');
+        alert('Congratulations! You completed all levels — you win!');
         currentLevel = 0;
       } else {
-        alert('Level Completed!');
+        alert('Level completed! Moving to next level.');
         currentLevel++;
       }
       loadLevel(currentLevel);
-    }
+    }, 50);
   }
 }
 
 document.addEventListener('keydown', e => {
-  if(e.key === 'ArrowUp') movePlayer(0, -1);
-  if(e.key === 'ArrowDown') movePlayer(0, 1);
-  if(e.key === 'ArrowLeft') movePlayer(-1, 0);
-  if(e.key === 'ArrowRight') movePlayer(1, 0);
+  if(e.key === 'ArrowUp') { e.preventDefault(); movePlayer(0,-1); }
+  if(e.key === 'ArrowDown') { e.preventDefault(); movePlayer(0,1); }
+  if(e.key === 'ArrowLeft') { e.preventDefault(); movePlayer(-1,0); }
+  if(e.key === 'ArrowRight') { e.preventDefault(); movePlayer(1,0); }
 });
 
-restartBtn.addEventListener('click', () => loadLevel(currentLevel));
+document.getElementById('upBtn').addEventListener('click', ()=> movePlayer(0,-1));
+document.getElementById('downBtn').addEventListener('click', ()=> movePlayer(0,1));
+document.getElementById('leftBtn').addEventListener('click', ()=> movePlayer(-1,0));
+document.getElementById('rightBtn').addEventListener('click', ()=> movePlayer(1,0));
 
-// Share button
-shareBtn.addEventListener('click', () => {
-  window.open('https://chatgpt.com/share/68ca55cf-bcd0-8003-8f6a-9e0c2f76ac56', '_blank'); // replace with your chat link if needed
+document.getElementById('restartBtn').addEventListener('click', ()=> loadLevel(currentLevel));
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  currentLevel = Math.max(0, currentLevel-1);
+  loadLevel(currentLevel);
+});
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  currentLevel = Math.min(levels.length-1, currentLevel+1);
+  loadLevel(currentLevel);
 });
 
-// Start game
+document.getElementById('helpBtn').addEventListener('click', ()=>{
+  alert('How to play:\n\nUse arrow keys or on-screen arrows to move the yellow square from START (green) to FINISH (red). Complete all 10 levels to win. Use Restart Level to retry.');
+});
+
+document.getElementById('shareBtn').addEventListener('click', ()=>{
+  // Replace the URL below with your chat permalink if you have one.
+  window.open('https://chat.openai.com/', '_blank', 'noopener');
+});
+
+document.addEventListener('mousedown', e => {
+  const tag = (e.target && e.target.tagName) || '';
+  if(tag === 'BUTTON' || tag === 'DIV') e.preventDefault();
+}, {passive:false});
+
 loadLevel(currentLevel);
 </script>
 </body>
