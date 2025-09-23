@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Maze Escape — Game300</title>
+<style>
+  :root{ --cell-size:36px; --gap:3px; --bg1:linear-gradient(135deg,#74ebd5,#ACB6E5); --wall:#222; --path:#fff; }
+  @media (max-width:720px){ :root{ --cell-size:28px } }
+  @media (min-width:1200px){ :root{ --cell-size:42px } }
+  html,body{ height:100%; margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg1); display:flex; align-items:flex-start; justify-content:center; padding:24px; }
+  .container{ width:100%; max-width:960px; background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.90)); border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.18); padding:18px; }
+  header{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  h1{ margin:0; font-size:22px; }
+  .meta{ text-align:right; font-size:14px; color:#333 }
+  #instructions{ margin:12px 0; background:rgba(255,255,255,0.95); padding:12px; border-radius:8px; font-size:14px; }
+  #game-area{ display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap; }
+  #maze{ display:grid; gap:var(--gap); padding:8px; border-radius:8px; box-shadow:inset 0 2px 6px rgba(0,0,0,0.06); }
+  .cell{ width:var(--cell-size); height:var(--cell-size); box-sizing:border-box; border-radius:6px; background:var(--path); transition:background .08s, transform .08s; display:flex; align-items:center; justify-content:center; font-size:20px; user-select:none; }
+  .wall{ background:var(--wall); }
+  .cell img{ width:86%; height:86%; pointer-events:none; display:block; }
+  .controls{ min-width:220px; display:flex; flex-direction:column; gap:12px; align-items:center; }
+  .level-info{ font-weight:700; font-size:18px; }
+  .buttons{ display:flex; gap:8px; }
+  button{ cursor:pointer; border:0; padding:10px 12px; border-radius:8px; font-weight:600; box-shadow:0 6px 16px rgba(0,0,0,0.12); background:#1976d2; color:white; }
+  button.ghost{ background:transparent; color:#1976d2; box-shadow:none; border:2px solid rgba(25,118,210,0.12); }
+  .small{ padding:8px 10px; font-size:14px; }
+  .dpad{ display:grid; grid-template-columns: repeat(3,44px); gap:6px; justify-items:center; align-items:center; }
+  .dpad button{ width:44px; height:44px; padding:0; border-radius:8px; background:#444; color:white; font-weight:700; }
+  footer{ margin-top:12px; text-align:center; font-size:13px; color:#333; opacity:0.95; }
+  .status-row{ display:flex; gap:12px; align-items:center; }
+  .coins-badge{ background:#ffd54d; padding:6px 10px; border-radius:999px; font-weight:700; box-shadow:0 3px 8px rgba(0,0,0,0.12); }
+</style>
+</head>
+<body>
+  <div class="container" role="main">
+    <header>
+      <h1>Maze Escape</h1>
+      <div class="meta">
+        <div id="levelText">Level 1</div>
+        <div style="font-size:12px;color:#666">Use arrow keys or touch controls</div>
+      </div>
+    </header>
+
+    <div id="instructions">
+      <strong>How to play</strong>
+      <p>Guide the <strong>rabbit</strong> to the <strong>carrot</strong>. Collect coins along the way. No timer — just maze fun. 25 unique levels, each more twisty than the last.</p>
+    </div>
+
+    <div id="game-area">
+      <div>
+        <div id="maze" aria-hidden="false"></div>
+      </div>
+
+      <aside class="controls" aria-label="game controls">
+        <div class="level-info" id="levelDisplay">Level 1</div>
+        <div class="status-row">
+          <div class="coins-badge" id="coinsDisplay">Coins: 0</div>
+          <div id="msgSmall" style="color:#444; font-size:13px"></div>
+        </div>
+        <div class="buttons">
+          <button id="restartBtn" class="small">Restart Level</button>
+          <button id="prevBtn" class="small ghost">Prev</button>
+          <button id="nextBtn" class="small ghost">Next</button>
+        </div>
+
+        <div class="dpad" aria-hidden="false" style="margin-top:6px;">
+          <div></div>
+          <button id="upBtn">↑</button>
+          <div></div>
+          <button id="leftBtn">←</button>
+          <button id="downBtn">↓</button>
+          <button id="rightBtn">→</button>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <small id="statusMsg"></small>
+    </footer>
+  </div>
+
+<script>
+// --- Settings ---
+const ROWS = 7; const COLS = 10; const TOTAL_LEVELS = 25;
+
+// --- Audio (WebAudio synthesized, no external files) ---
+const AudioCtx = window.AudioContext || window.webkitAudioContext; let audioCtx = null;
+function ensureAudio(){ if(!audioCtx) audioCtx = new AudioCtx(); }
+function playWalk(){ try{ ensureAudio(); audioCtx.resume(); const now = audioCtx.currentTime; const g = audioCtx.createGain(); g.connect(audioCtx.destination); g.gain.setValueAtTime(0.0001, now); const o = audioCtx.createOscillator(); o.type='square'; o.frequency.setValueAtTime(900, now); o.connect(g); g.gain.exponentialRampToValueAtTime(0.08, now+0.005); g.gain.exponentialRampToValueAtTime(0.0001, now+0.09); o.start(now); o.stop(now+0.09); }catch(e){} }
+function playCoin(){ try{ ensureAudio(); audioCtx.resume(); const now = audioCtx.currentTime; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type='sine'; o.frequency.setValueAtTime(1200, now); o.connect(g); g.connect(audioCtx.destination); g.gain.setValueAtTime(0.001, now); g.gain.exponentialRampToValueAtTime(0.13, now+0.01); g.gain.exponentialRampToValueAtTime(0.001, now+0.25); o.start(now); o.stop(now+0.26); }catch(e){} }
+function playClap(){ try{ ensureAudio(); audioCtx.resume(); const now = audioCtx.currentTime; const bufferSize = audioCtx.sampleRate * 0.12; const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate); const data = buffer.getChannelData(0); for(let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * Math.exp(-i/bufferSize*6); const src = audioCtx.createBufferSource(); src.buffer = buffer; const g = audioCtx.createGain(); g.gain.value = 0.9; src.connect(g); g.connect(audioCtx.destination); src.start(now); }catch(e){} }
+
+// --- Emoji as tiny SVG images (so original img-based logic continues to work) ---
+function svgToDataURI(svg){ return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg); }
+
+// Each SVG simply contains the emoji centered so existing <img src=...> usage still works
+const coinSVG = `
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
+  <text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='36' font-family='Segoe UI Emoji, Noto Color Emoji, Apple Color Emoji, \"Segoe UI Symbol\", sans-serif'>❤️</text>
+</svg>`;
+const rabbitSVG = `
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
+  <text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='36' font-family='Segoe UI Emoji, Noto Color Emoji, Apple Color Emoji, \"Segoe UI Symbol\", sans-serif'>🐇</text>
+</svg>`;
+const carrotSVG = `
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
+  <text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='36' font-family='Segoe UI Emoji, Noto Color Emoji, Apple Color Emoji, \"Segoe UI Symbol\", sans-serif'>🥕</text>
+</svg>`;
+
+const coinURI = svgToDataURI(coinSVG);
+const rabbitURI = svgToDataURI(rabbitSVG);
+const carrotURI = svgToDataURI(carrotSVG);
+
+// --- Maze generation utilities ---
+function createEmptyGrid(rows, cols){ return Array.from({length:rows}, ()=>Array(cols).fill(1)); }
+function inBounds(x,y,rows,cols){ return x>=0 && x<cols && y>=0 && y<rows; }
+function findPath(grid, start, finish){
+  const rows = grid.length, cols = grid[0].length; const seen = Array.from({length:rows}, ()=>Array(cols).fill(false));
+  const q=[{x:start.x,y:start.y,dist:0,prev:null}]; seen[start.y][start.x]=true; const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+  while(q.length){ const cur=q.shift(); if(cur.x===finish.x && cur.y===finish.y){ const path=[]; let p=cur; while(p){ path.push({x:p.x,y:p.y}); p=p.prev;} path.reverse(); return {found:true,dist:cur.dist,path}; }
+    for(const [dx,dy] of dirs){ const nx=cur.x+dx, ny=cur.y+dy; if(nx>=0 && nx<cols && ny>=0 && ny<rows && !seen[ny][nx] && grid[ny][nx]!==1){ seen[ny][nx]=true; q.push({x:nx,y:ny,dist:cur.dist+1,prev:cur}); } }
+  }
+  return {found:false};
+}
+
+function generateMaze(rows, cols){
+  const grid = createEmptyGrid(rows, cols);
+  // carve using randomized Prim variant (cells at odd coordinates)
+  const startX=1, startY=1; grid[startY][startX]=0;
+  const frontier = [];
+  function addFrontier(cx,cy){
+    const deltas = [[2,0],[-2,0],[0,2],[0,-2]];
+    for(const [dx,dy] of deltas){ const nx=cx+dx, ny=cy+dy; if(inBounds(nx,ny,rows,cols) && grid[ny][nx]===1) frontier.push([nx,ny,cx,cy]); }
+  }
+  addFrontier(startX,startY);
+  while(frontier.length){ const idx=Math.floor(Math.random()*frontier.length); const [fx,fy,px,py] = frontier.splice(idx,1)[0]; if(grid[fy][fx]===1){ const mx=(fx+px)/2, my=(fy+py)/2; grid[my][mx]=0; grid[fy][fx]=0; addFrontier(fx,fy); } }
+  // ensure border walls
+  for(let y=0;y<rows;y++){ grid[y][0]=1; grid[y][cols-1]=1; }
+  for(let x=0;x<cols;x++){ grid[0][x]=1; grid[rows-1][x]=1; }
+  return grid;
+}
+
+function shuffleArray(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } }
+
+// --- Build 25 unique levels procedurally ---
+const levels = [];
+(function buildLevels(){
+  const seen = new Set();
+  for(let L=0; L<TOTAL_LEVELS; L++){
+    let attempts=0;
+    const neededPath = 8 + Math.floor(L * 1.6);
+    while(true){ attempts++;
+      const base = generateMaze(ROWS, COLS);
+      // choose left-side start and right-side finish
+      const left = []; const right = [];
+      for(let y=1;y<ROWS-1;y++){ if(base[y][1]===0) left.push({x:1,y}); if(base[y][COLS-2]===0) right.push({x:COLS-2,y}); }
+      if(left.length===0 || right.length===0) continue;
+      const start = left[Math.floor(Math.random()*left.length)];
+      const finish = right[Math.floor(Math.random()*right.length)];
+      const p = findPath(base, start, finish); if(!p.found) continue; if(p.dist < neededPath && attempts < 200) continue;
+      const grid = base.map(r=>r.slice()); // copy
+      // place coins
+      const coinCount = 2 + Math.floor(L/4);
+      const free = [];
+      for(let y=1;y<ROWS-1;y++) for(let x=1;x<COLS-1;x++) if(grid[y][x]===0 && !(x===start.x && y===start.y) && !(x===finish.x && y===finish.y)) free.push({x,y});
+      shuffleArray(free);
+      let placed=0;
+      for(const c of free){ if(placed>=coinCount) break; const d = Math.abs(c.x-start.x)+Math.abs(c.y-start.y); if(d<=1) continue; grid[c.y][c.x]=4; placed++; }
+      grid[start.y][start.x]=2; grid[finish.y][finish.x]=3;
+      const hash = grid.map(r=>r.join('')).join('|'); if(seen.has(hash) && attempts<300) continue; seen.add(hash); levels.push(grid); break;
+    }
+  }
+})();
+
+// --- Game state ---
+let currentLevel = 0; let playerPos = {x:0,y:0}; let coinsCollected = 0;
+const mazeEl = document.getElementById('maze'); const levelText = document.getElementById('levelText'); const levelDisplay = document.getElementById('levelDisplay'); const statusMsg = document.getElementById('statusMsg'); const coinsDisplay = document.getElementById('coinsDisplay'); const msgSmall = document.getElementById('msgSmall');
+
+const compliments = ["CONGRATULATIONS!","KEEP IT UP!","YOU SLAYED!","GOOD JOB!","FABULOUS!"];
+
+function loadLevel(n){ const grid = levels[n]; if(!grid) return; coinsCollected=0; mazeEl.innerHTML=''; const rows = grid.length, cols = grid[0].length; mazeEl.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`; mazeEl.style.gridTemplateRows = `repeat(${rows}, var(--cell-size))`;
+  for(let y=0;y<rows;y++){ for(let x=0;x<cols;x++){ const v = grid[y][x]; const d = document.createElement('div'); d.className='cell'; if(v===1) d.classList.add('wall'); d.id = `cell-${x}-${y}`;
+      if(v===4){ const img = document.createElement('img'); img.src = coinURI; img.dataset.role='coin'; d.appendChild(img); }
+      if(v===3){ const img = document.createElement('img'); img.src = carrotURI; img.dataset.role='finish'; d.appendChild(img); }
+      if(v===2){ playerPos = {x,y}; /* start cell remains empty; rabbit drawn by drawPlayer() */ }
+      mazeEl.appendChild(d);
+    }
+  }
+  drawPlayer(); levelText.textContent = `Level ${n+1}`; levelDisplay.textContent = `Level ${n+1}`; coinsDisplay.textContent = `Coins: ${coinsCollected}`; statusMsg.textContent=''; msgSmall.textContent='';
+}
+
+function drawPlayer(){ // remove previous player img
+  document.querySelectorAll('.cell img[data-role="player"]').forEach(img=>img.remove());
+  const el = document.getElementById(`cell-${playerPos.x}-${playerPos.y}`);
+  if(!el) return;
+  const p = document.createElement('img'); p.src = rabbitURI; p.dataset.role='player'; el.appendChild(p);
+}
+
+function tryCollect(x,y){ const grid = levels[currentLevel]; if(grid[y][x]===4){ grid[y][x]=0; const cellEl = document.getElementById(`cell-${x}-${y}`); const coinImg = cellEl && cellEl.querySelector('img[data-role="coin"]'); if(coinImg) coinImg.remove(); coinsCollected++; coinsDisplay.textContent = `Coins: ${coinsCollected}`; playCoin(); } }
+
+function movePlayer(dx,dy){ const grid = levels[currentLevel]; const rows = grid.length, cols = grid[0].length; const nx = playerPos.x + dx, ny = playerPos.y + dy; if(ny<0||ny>=rows||nx<0||nx>=cols) return; const cellVal = grid[ny][nx]; if(cellVal===1){ playWalk(); return; } playWalk(); if(cellVal===4){ tryCollect(nx,ny); }
+  playerPos = {x:nx,y:ny}; drawPlayer(); if(cellVal===3){ // reached finish
+    setTimeout(()=>{
+      playClap();
+      const compliment = compliments[Math.floor(Math.random()*compliments.length)];
+      const flowers = " 🌸🌼🌺✨";
+      if(currentLevel === levels.length - 1){
+        alert(`${compliment}${flowers} You completed the maze adventure — incredible!`);
+        currentLevel = 0;
+      } else {
+        alert(`${compliment}${flowers} Level ${currentLevel+1} complete!`);
+        currentLevel++;
+      }
+      loadLevel(currentLevel);
+    }, 120);
+  }
+}
+
+// --- Controls ---
+document.addEventListener('keydown', e=>{ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault(); if(e.key==='ArrowUp') movePlayer(0,-1); if(e.key==='ArrowDown') movePlayer(0,1); if(e.key==='ArrowLeft') movePlayer(-1,0); if(e.key==='ArrowRight') movePlayer(1,0); });
+['upBtn','downBtn','leftBtn','rightBtn'].forEach(id=>{ const el=document.getElementById(id); if(!el) return; el.addEventListener('click', ()=>{ if(id==='upBtn') movePlayer(0,-1); if(id==='downBtn') movePlayer(0,1); if(id==='leftBtn') movePlayer(-1,0); if(id==='rightBtn') movePlayer(1,0); }); el.addEventListener('touchstart', e=>{ e.preventDefault(); if(id==='upBtn') movePlayer(0,-1); if(id==='downBtn') movePlayer(0,1); if(id==='leftBtn') movePlayer(-1,0); if(id==='rightBtn') movePlayer(1,0); }, {passive:false}); });
+
+document.getElementById('restartBtn').addEventListener('click', ()=> loadLevel(currentLevel));
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentLevel = Math.max(0, currentLevel-1); loadLevel(currentLevel); });
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentLevel = Math.min(levels.length-1, currentLevel+1); loadLevel(currentLevel); });
+
+// resume audio on first interaction if browser blocks
+window.addEventListener('click', ()=>{ if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); }, {once:true});
+
+// initial load
+loadLevel(currentLevel);
+</script>
+</body>
+</html>
