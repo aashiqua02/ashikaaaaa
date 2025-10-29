@@ -5,86 +5,145 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ashika Sherpa Portfolio</title>
   <style>
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background-color: #f7f7f7;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(to bottom right, #fffafc, #e0f7fa);
       color: #333;
-      line-height: 1.6;
     }
     header {
-      background-color: #2c3e50;
+      background: linear-gradient(135deg, #ff80ab, #80deea);
       color: white;
       text-align: center;
       padding: 80px 20px;
+      animation: fadeIn 1.5s ease;
     }
     header h1 {
+      font-size: 3em;
       margin: 0;
-      font-size: 2.8em;
     }
     header p {
       font-size: 1.2em;
       margin-top: 10px;
     }
     nav {
+      background-color: #ffb74d;
       text-align: center;
-      background-color: #34495e;
-      padding: 10px 0;
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
     nav a {
       color: white;
-      margin: 0 15px;
       text-decoration: none;
+      margin: 0 20px;
       font-weight: bold;
+      transition: color 0.3s ease;
     }
     nav a:hover {
-      color: #f39c12;
+      color: #37474f;
     }
     section {
       max-width: 900px;
       margin: 50px auto;
-      padding: 30px 20px;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: white;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      animation: slideUp 1.2s ease;
     }
-    section h2 {
-      color: #2c3e50;
-      border-bottom: 2px solid #f39c12;
-      padding-bottom: 10px;
+    h2 {
+      border-left: 5px solid #ff80ab;
+      padding-left: 10px;
+      color: #37474f;
+    }
+    ul {
+      list-style-type: square;
+      padding-left: 20px;
     }
     .about-container {
       display: flex;
       align-items: center;
-      gap: 20px;
       flex-wrap: wrap;
+      gap: 25px;
     }
     .about-container img {
       width: 220px;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+    .about-container img:hover {
+      transform: scale(1.05);
     }
     .about-text {
       flex: 1;
       min-width: 250px;
     }
-    ul {
-      list-style-type: disc;
-      padding-left: 20px;
-    }
     footer {
+      background-color: #37474f;
+      color: white;
       text-align: center;
       padding: 30px;
-      background-color: #2c3e50;
-      color: white;
       margin-top: 50px;
+      border-top: 5px solid #ff80ab;
     }
-    a {
-      color: #3498db;
+    /* Game On Section */
+    .game-section {
+      text-align: center;
+      background: linear-gradient(135deg, #e1bee7, #b2ebf2);
+      border-radius: 15px;
+      padding: 40px 20px;
+    }
+    .game-section h2 {
+      border: none;
+      color: #212121;
+      margin-bottom: 30px;
+    }
+    .game-icons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .game-card {
+      background: white;
+      width: 220px;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .game-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+    .game-card i {
+      font-size: 40px;
+      color: #ff80ab;
+      margin-bottom: 10px;
+    }
+    .game-card a {
+      text-decoration: none;
+      color: #00796b;
+      font-weight: bold;
+    }
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <header>
@@ -98,14 +157,13 @@
     <a href="#education">Education</a>
     <a href="#experience">Experience</a>
     <a href="#skills">Skills</a>
-    <a href="#projects">Projects</a>
+    <a href="#gameon">Game On</a>
     <a href="#contact">Contact</a>
   </nav>
 
   <section id="about">
     <h2>About Me</h2>
     <div class="about-container">
-      <!-- Replace photo.jpg with the actual file name of your uploaded picture -->
       <img src="myphoto.jpg" alt="Ashika Sherpa Photo">
       <div class="about-text">
         <p>Hello World! I'm Ashika Sherpa from Nepal, the land of hills and flowing springs in the lap of the Himalayas. I have a passion for business, technology, and entrepreneurship. I aim to become an entrepreneur, enjoy life’s adventures, and continuously learn new things.</p>
@@ -126,7 +184,7 @@
     <h2>Experience</h2>
     <ul>
       <li><strong>Family Business Assistant (Grocery Store & Local Restaurant)</strong> – Assisted with inventory, income/outcome calculations, and general operations.</li>
-      <li><strong>Part-time Teacher & Home Tutor</strong> – Taught in my own school and provided tutoring for students in grades 2, 9, and 12.</li>
+      <li><strong>Part-time Teacher & Home Tutor</strong> – Taught students of grades 2, 9, and 12.</li>
       <li><strong>Beauty Salon & Nail Technician Trainee</strong> – Completed training for practical skills in personal care services.</li>
       <li><strong>Sales Girl & Store Manager (Clothing Store)</strong> – Gained experience in communication, negotiation, and marketing strategies.</li>
     </ul>
@@ -141,15 +199,34 @@
     </ul>
   </section>
 
-  <section id="projects">
-    <h2>Notable Projects</h2>
-    <ul>
-      <li>Waste Water Treatment Plant – Designed and studied a model for wastewater management.</li>
-      <li>Motor Car Project – Built a functional motor car model.</li>
-      <li>Sensor Light Project – Created an automatic sensor light system.</li>
-      <li>Science Experiments – Reaction between coke and baking soda.</li>
-      <li>Duck Farming Survey Report – Created a detailed document based on a survey on duck farming.</li>
-    </ul>
+  <section id="gameon" class="game-section">
+    <h2>🎮 Game On</h2>
+    <div class="game-icons">
+      <div class="game-card">
+        <i class="fas fa-code"></i>
+        <p><a href="https://colab.research.google.com/drive/1HzkvgVMsWGBU0y2vohE_xZKplUZSOtM6?usp=drive_link" target="_blank">Python Exercise</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-book-open"></i>
+        <p><a href="https://colab.research.google.com/drive/1o4aTMf8ZM7gVPsafYzvb7WZebTUuzJir?usp=drive_link" target="_blank">Self Learning</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-comments"></i>
+        <p><a href="https://chatgpt.com/share/6901f50a-0720-8011-8667-4029ab106721" target="_blank">T-S History</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-gamepad"></i>
+        <p><a href="https://aashiqua02.github.io/ashikaaaaa/Game3.html" target="_blank">Play Old Game</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-rocket"></i>
+        <p><a href="https://aashiqua02.github.io/ashikaaaaa/add.html" target="_blank">Play Improved Game</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-file-alt"></i>
+        <p><a href="https://docs.google.com/document/d/1j1olH_-MEVjwjwdap3196qTgHKd115HQLesDcZKysNw/edit?usp=sharing" target="_blank">View Google Doc</a></p>
+      </div>
+    </div>
   </section>
 
   <section id="contact">
@@ -158,28 +235,9 @@
     <p>Phone: 010-4636-9379</p>
     <p>Instagram: <a href="https://www.instagram.com/asheeee02" target="_blank">@asheeee02</a></p>
   </section>
-<!-- Game Project Section -->
-<section style="text-align: center; margin: 50px 0;">
-  <h2>My Game Project</h2>
-  <ul style="list-style: none; padding: 0; margin: 20px 0;">
-    <li style="margin: 10px 0;">
-      <a href="https://aashiqua02.github.io/ashikaaaaa/Game3.html" target="_blank">Play Old Game</a>
-    </li>
-    <li style="margin: 10px 0;">
-      <a href="https://aashiqua02.github.io/ashikaaaaa/add.html" target="_blank">Play Improved Game</a>
-    </li>
-    <li style="margin: 10px 0;">
-      <a href="https://docs.google.com/document/d/1j1olH_-MEVjwjwdap3196qTgHKd115HQLesDcZKysNw/edit?usp=sharing" target="_blank">View Google Doc</a>
-    </li>
-  </ul>
-</section>
 
   <footer>
-    &copy; 2025 Ashika Sherpa | All Rights Reserved
+    &copy; 2025 Ashika Sherpa | All Rights Reserved 🌸
   </footer>
 </body>
 </html>
-
-
-
-
