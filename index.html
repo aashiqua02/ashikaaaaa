@@ -4,137 +4,240 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ashika Sherpa Portfolio</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
-    * { box-sizing: border-box; scroll-behavior: smooth; }
-    body { margin:0; font-family:"Poppins", sans-serif; background:linear-gradient(to bottom right,#fffafc,#e0f7fa); color:#333;}
-    header{background:linear-gradient(135deg,#ff80ab,#80deea); color:white; text-align:center; padding:80px 20px; animation:fadeIn 1.5s ease;}
-    header h1{font-size:3em;margin:0;}
-    header p{font-size:1.2em;margin-top:10px;}
-    nav{background-color:#ffb74d; text-align:center; padding:15px 0; position:sticky; top:0; z-index:1000;}
-    nav a{color:white;text-decoration:none;margin:0 20px;font-weight:bold;transition:color 0.3s ease;}
-    nav a:hover{color:#37474f;}
-    section{max-width:900px;margin:50px auto;background:white;padding:40px 30px;border-radius:15px;box-shadow:0 4px 12px rgba(0,0,0,0.1);animation:slideUp 1.2s ease;}
-    h2{border-left:5px solid #ff80ab;padding-left:10px;color:#37474f;}
-    ul{list-style-type:square;padding-left:20px;}
-    .about-container{display:flex;align-items:center;flex-wrap:wrap;gap:25px;}
-    .about-container img{width:220px;border-radius:15px;box-shadow:0 4px 10px rgba(0,0,0,0.2);transition:transform 0.3s;}
-    .about-container img:hover{transform:scale(1.05);}
-    .about-text{flex:1;min-width:250px;}
-    footer{background-color:#37474f;color:white;text-align:center;padding:30px;margin-top:50px;border-top:5px solid #ff80ab;}
-    .project-section,.assignment-section{text-align:center;background:linear-gradient(135deg,#e1bee7,#b2ebf2);border-radius:15px;padding:40px 20px;}
-    .project-section h2,.assignment-section h2{border:none;color:#212121;margin-bottom:30px;}
-    .icon-cards{display:flex;flex-wrap:wrap;justify-content:center;gap:30px;}
-    .icon-card{background:white;width:220px;padding:20px;border-radius:15px;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:transform 0.3s, box-shadow 0.3s;}
-    .icon-card:hover{transform:translateY(-10px);box-shadow:0 6px 16px rgba(0,0,0,0.2);}
-    .icon-card i{font-size:40px;color:#ff80ab;margin-bottom:10px;}
-    .icon-card a{text-decoration:none;color:#00796b;font-weight:bold;}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
-    @keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(to bottom right, #fffafc, #e0f7fa);
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #ff80ab, #80deea);
+      color: white;
+      text-align: center;
+      padding: 80px 20px;
+      animation: fadeIn 1.5s ease;
+    }
+    header h1 {
+      font-size: 3em;
+      margin: 0;
+    }
+    header p {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+    nav {
+      background-color: #ffb74d;
+      text-align: center;
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #37474f;
+    }
+    section {
+      max-width: 900px;
+      margin: 50px auto;
+      background: white;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      animation: slideUp 1.2s ease;
+    }
+    h2 {
+      border-left: 5px solid #ff80ab;
+      padding-left: 10px;
+      color: #37474f;
+    }
+    ul {
+      list-style-type: square;
+      padding-left: 20px;
+    }
+    .about-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 25px;
+    }
+    .about-container img {
+      width: 220px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+    .about-container img:hover {
+      transform: scale(1.05);
+    }
+    .about-text {
+      flex: 1;
+      min-width: 250px;
+    }
+    footer {
+      background-color: #37474f;
+      color: white;
+      text-align: center;
+      padding: 30px;
+      margin-top: 50px;
+      border-top: 5px solid #ff80ab;
+    }
+    /* Game On Section */
+    .game-section {
+      text-align: center;
+      background: linear-gradient(135deg, #e1bee7, #b2ebf2);
+      border-radius: 15px;
+      padding: 40px 20px;
+    }
+    .game-section h2 {
+      border: none;
+      color: #212121;
+      margin-bottom: 30px;
+    }
+    .game-icons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .game-card {
+      background: white;
+      width: 220px;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .game-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+    .game-card i {
+      font-size: 40px;
+      color: #ff80ab;
+      margin-bottom: 10px;
+    }
+    .game-card a {
+      text-decoration: none;
+      color: #00796b;
+      font-weight: bold;
+    }
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <header>
+    <h1>Hello, I'm Ashika Sherpa</h1>
+    <p>Bachelor's in Business (Integrated Business Management) at Dong-A University, Busan, South Korea</p>
+    <p><em>"I hear and I forget, I see and I remember, I do and I understand."</em></p>
+  </header>
 
-<header>
-  <h1>Hello, I'm Ashika Sherpa</h1>
-  <p>Bachelor's in Business (Integrated Business Management) at Dong-A University, Busan, South Korea</p>
-  <p><em>"I hear and I forget, I see and I remember, I do and I understand."</em></p>
-</header>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#education">Education</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="#gameon">Game On</a>
+    <a href="#contact">Contact</a>
+  </nav>
 
-<nav>
-  <a href="#about">About</a>
-  <a href="#education">Education</a>
-  <a href="#experience">Experience</a>
-  <a href="#skills">Skills</a>
-  <a href="#project">Project</a>
-  <a href="#assignment">Assignment</a>
-  <a href="#contact">Contact</a>
-</nav>
-
-<section id="about">
-  <h2>About Me</h2>
-  <div class="about-container">
-    <img src="https://raw.githubusercontent.com/asheeee02/<repo-name>/main/myphoto.jpg" alt="Ashika Sherpa Photo">
-    <div class="about-text">
-      <p>Hello World! I'm Ashika Sherpa from Nepal, the land of hills and flowing springs in the lap of the Himalayas. I have a passion for business, technology, and entrepreneurship. I aim to become an entrepreneur, enjoy life’s adventures, and continuously learn new things.</p>
-      <p>My hobbies include writing poems and essays, reading, traveling, hiking, bike racing, learning Korean, programming, and chatting with ChatGPT.</p>
+  <section id="about">
+    <h2>About Me</h2>
+    <div class="about-container">
+      <img src="myphoto.jpg" alt="Ashika Sherpa Photo">
+      <div class="about-text">
+        <p>Hello World! I'm Ashika Sherpa from Nepal, the land of hills and flowing springs in the lap of the Himalayas. I have a passion for business, technology, and entrepreneurship. I aim to become an entrepreneur, enjoy life’s adventures, and continuously learn new things.</p>
+        <p>My hobbies include writing poems and essays, reading, traveling, hiking, bike racing, learning Korean, programming, and chatting with ChatGPT.</p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="education">
-  <h2>Education</h2>
-  <ul>
-    <li>High School: Science Faculty, Pokhara, Nepal (Graduated 2023)</li>
-    <li>Bachelor’s in Business (Integrated Business Management), Dong-A University, Busan, South Korea (Currently 2nd semester)</li>
-  </ul>
-</section>
+  <section id="education">
+    <h2>Education</h2>
+    <ul>
+      <li>High School: Science Faculty, Pokhara, Nepal (Graduated 2023)</li>
+      <li>Bachelor’s in Business (Integrated Business Management), Dong-A University, Busan, South Korea (Currently 2nd semester)</li>
+    </ul>
+  </section>
 
-<section id="experience">
-  <h2>Experience</h2>
-  <ul>
-    <li><strong>Family Business Assistant (Grocery Store & Local Restaurant)</strong> – Assisted with inventory, income/outcome calculations, and general operations.</li>
-    <li><strong>Part-time Teacher & Home Tutor</strong> – Taught students of grades 2, 9, and 12.</li>
-    <li><strong>Beauty Salon & Nail Technician Trainee</strong> – Completed training for practical skills in personal care services.</li>
-    <li><strong>Sales Girl & Store Manager (Clothing Store)</strong> – Gained experience in communication, negotiation, and marketing strategies.</li>
-  </ul>
-</section>
+  <section id="experience">
+    <h2>Experience</h2>
+    <ul>
+      <li><strong>Family Business Assistant (Grocery Store & Local Restaurant)</strong> – Assisted with inventory, income/outcome calculations, and general operations.</li>
+      <li><strong>Part-time Teacher & Home Tutor</strong> – Taught students of grades 2, 9, and 12.</li>
+      <li><strong>Beauty Salon & Nail Technician Trainee</strong> – Completed training for practical skills in personal care services.</li>
+      <li><strong>Sales Girl & Store Manager (Clothing Store)</strong> – Gained experience in communication, negotiation, and marketing strategies.</li>
+    </ul>
+  </section>
 
-<section id="skills">
-  <h2>Skills</h2>
-  <ul>
-    <li>Business & Management: Entrepreneurship, business operations, marketing strategies.</li>
-    <li>Computer & Technology: MS Word, Excel, PowerPoint, HTML, Python, basic QBASIC & C, algorithms.</li>
-    <li>Other: Quick learner, problem-solving, tech-savvy.</li>
-  </ul>
-</section>
+  <section id="skills">
+    <h2>Skills</h2>
+    <ul>
+      <li>Business & Management: Entrepreneurship, business operations, marketing strategies.</li>
+      <li>Computer & Technology: MS Word, Excel, PowerPoint, HTML, Python, basic QBASIC & C, algorithms.</li>
+      <li>Other: Quick learner, problem-solving, tech-savvy.</li>
+    </ul>
+  </section>
 
-<section id="project" class="project-section">
-  <h2>🎯 Project</h2>
-  <div class="icon-cards">
-    <div class="icon-card">
-      <i class="fas fa-gamepad"></i>
-      <p><a href="https://aashiqua02.github.io/ashikaaaaa/Game3.html" target="_blank">Play Old Game</a></p>
+  <section id="gameon" class="game-section">
+    <h2>🎮 Game On</h2>
+    <div class="game-icons">
+      <div class="game-card">
+        <i class="fas fa-code"></i>
+        <p><a href="https://colab.research.google.com/drive/1HzkvgVMsWGBU0y2vohE_xZKplUZSOtM6?usp=drive_link" target="_blank">Python Exercise</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-book-open"></i>
+        <p><a href="https://colab.research.google.com/drive/1o4aTMf8ZM7gVPsafYzvb7WZebTUuzJir?usp=drive_link" target="_blank">Self Learning</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-comments"></i>
+        <p><a href="https://chatgpt.com/share/6901f50a-0720-8011-8667-4029ab106721" target="_blank">T-S History</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-gamepad"></i>
+        <p><a href="https://aashiqua02.github.io/ashikaaaaa/Game3.html" target="_blank">Play Old Game</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-rocket"></i>
+        <p><a href="https://aashiqua02.github.io/ashikaaaaa/add.html" target="_blank">Play Improved Game</a></p>
+      </div>
+      <div class="game-card">
+        <i class="fas fa-file-alt"></i>
+        <p><a href="https://docs.google.com/document/d/1j1olH_-MEVjwjwdap3196qTgHKd115HQLesDcZKysNw/edit?usp=sharing" target="_blank">View Google Doc</a></p>
+      </div>
     </div>
-    <div class="icon-card">
-      <i class="fas fa-rocket"></i>
-      <p><a href="https://aashiqua02.github.io/ashikaaaaa/add.html" target="_blank">Play Improved Game</a></p>
-    </div>
-    <div class="icon-card">
-      <i class="fas fa-file-alt"></i>
-      <p><a href="https://docs.google.com/document/d/1j1olH_-MEVjwjwdap3196qTgHKd115HQLesDcZKysNw/edit?usp=sharing" target="_blank">View Google Doc</a></p>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="assignment" class="assignment-section">
-  <h2>📚 Assignment</h2>
-  <div class="icon-cards">
-    <div class="icon-card">
-      <i class="fas fa-code"></i>
-      <p><a href="https://colab.research.google.com/drive/1HzkvgVMsWGBU0y2vohE_xZKplUZSOtM6?usp=drive_link" target="_blank">Python Exercise</a></p>
-    </div>
-    <div class="icon-card">
-      <i class="fas fa-book-open"></i>
-      <p><a href="https://colab.research.google.com/drive/1o4aTMf8ZM7gVPsafYzvb7WZebTUuzJir?usp=drive_link" target="_blank">Self Learning</a></p>
-    </div>
-    <div class="icon-card">
-      <i class="fas fa-comments"></i>
-      <p><a href="https://chatgpt.com/share/6901f50a-0720-8011-8667-4029ab106721" target="_blank">T-S History</a></p>
-    </div>
-  </div>
-</section>
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>Email: <a href="mailto:sherpahasheekah002@gmail.com">sherpahasheekah002@gmail.com</a></p>
+    <p>Phone: 010-4636-9379</p>
+    <p>Instagram: <a href="https://www.instagram.com/asheeee02" target="_blank">@asheeee02</a></p>
+  </section>
 
-<section id="contact">
-  <h2>Contact</h2>
-  <p>Email: <a href="mailto:sherpahasheekah002@gmail.com">sherpahasheekah002@gmail.com</a></p>
-  <p>Phone: 010-4636-9379</p>
-  <p>Instagram: <a href="https://www.instagram.com/asheeee02" target="_blank">@asheeee02</a></p>
-</section>
-
-<footer>
-  &copy; 2025 Ashika Sherpa | All Rights Reserved 🌸
-</footer>
-
+  <footer>
+    &copy; 2025 Ashika Sherpa | All Rights Reserved 🌸
+  </footer>
 </body>
 </html>
