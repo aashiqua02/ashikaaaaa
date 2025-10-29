@@ -4,125 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ashika Sherpa Portfolio</title>
-  <!-- Font Awesome CDN for GitHub Pages -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     * { box-sizing: border-box; scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(to bottom right, #fffafc, #e0f7fa);
-      color: #333;
-    }
-    header {
-      background: linear-gradient(135deg, #ff80ab, #80deea);
-      color: white;
-      text-align: center;
-      padding: 80px 20px;
-      animation: fadeIn 1.5s ease;
-    }
-    header h1 { font-size: 3em; margin: 0; }
-    header p { font-size: 1.2em; margin-top: 10px; }
-    nav {
-      background-color: #ffb74d;
-      text-align: center;
-      padding: 15px 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 20px;
-      font-weight: bold;
-      transition: color 0.3s ease;
-    }
-    nav a:hover { color: #37474f; }
-    section {
-      max-width: 900px;
-      margin: 50px auto;
-      background: white;
-      padding: 40px 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      animation: slideUp 1.2s ease;
-    }
-    h2 {
-      border-left: 5px solid #ff80ab;
-      padding-left: 10px;
-      color: #37474f;
-    }
-    ul { list-style-type: square; padding-left: 20px; }
-    .about-container {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 25px;
-    }
-    .about-container img {
-      width: 220px;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: transform 0.3s;
-    }
-    .about-container img:hover { transform: scale(1.05); }
-    .about-text { flex: 1; min-width: 250px; }
-    footer {
-      background-color: #37474f;
-      color: white;
-      text-align: center;
-      padding: 30px;
-      margin-top: 50px;
-      border-top: 5px solid #ff80ab;
-    }
-    .project-section, .assignment-section {
-      text-align: center;
-      background: linear-gradient(135deg, #e1bee7, #b2ebf2);
-      border-radius: 15px;
-      padding: 40px 20px;
-    }
-    .project-section h2, .assignment-section h2 {
-      border: none;
-      color: #212121;
-      margin-bottom: 30px;
-    }
-    .icon-cards {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-    }
-    .icon-card {
-      background: white;
-      width: 220px;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .icon-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-    }
-    .icon-card i {
-      font-size: 40px;
-      color: #ff80ab;
-      margin-bottom: 10px;
-    }
-    .icon-card a {
-      text-decoration: none;
-      color: #00796b;
-      font-weight: bold;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    body { margin:0; font-family:"Poppins", sans-serif; background:linear-gradient(to bottom right,#fffafc,#e0f7fa); color:#333;}
+    header{background:linear-gradient(135deg,#ff80ab,#80deea); color:white; text-align:center; padding:80px 20px; animation:fadeIn 1.5s ease;}
+    header h1{font-size:3em;margin:0;}
+    header p{font-size:1.2em;margin-top:10px;}
+    nav{background-color:#ffb74d; text-align:center; padding:15px 0; position:sticky; top:0; z-index:1000;}
+    nav a{color:white;text-decoration:none;margin:0 20px;font-weight:bold;transition:color 0.3s ease;}
+    nav a:hover{color:#37474f;}
+    section{max-width:900px;margin:50px auto;background:white;padding:40px 30px;border-radius:15px;box-shadow:0 4px 12px rgba(0,0,0,0.1);animation:slideUp 1.2s ease;}
+    h2{border-left:5px solid #ff80ab;padding-left:10px;color:#37474f;}
+    ul{list-style-type:square;padding-left:20px;}
+    .about-container{display:flex;align-items:center;flex-wrap:wrap;gap:25px;}
+    .about-container img{width:220px;border-radius:15px;box-shadow:0 4px 10px rgba(0,0,0,0.2);transition:transform 0.3s;}
+    .about-container img:hover{transform:scale(1.05);}
+    .about-text{flex:1;min-width:250px;}
+    footer{background-color:#37474f;color:white;text-align:center;padding:30px;margin-top:50px;border-top:5px solid #ff80ab;}
+    .project-section,.assignment-section{text-align:center;background:linear-gradient(135deg,#e1bee7,#b2ebf2);border-radius:15px;padding:40px 20px;}
+    .project-section h2,.assignment-section h2{border:none;color:#212121;margin-bottom:30px;}
+    .icon-cards{display:flex;flex-wrap:wrap;justify-content:center;gap:30px;}
+    .icon-card{background:white;width:220px;padding:20px;border-radius:15px;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:transform 0.3s, box-shadow 0.3s;}
+    .icon-card:hover{transform:translateY(-10px);box-shadow:0 6px 16px rgba(0,0,0,0.2);}
+    .icon-card i{font-size:40px;color:#ff80ab;margin-bottom:10px;}
+    .icon-card a{text-decoration:none;color:#00796b;font-weight:bold;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
   </style>
 </head>
 <body>
@@ -146,7 +54,6 @@
 <section id="about">
   <h2>About Me</h2>
   <div class="about-container">
-    <!-- GitHub-hosted photo -->
     <img src="https://raw.githubusercontent.com/asheeee02/ashika-portfolio/main/myphoto.jpg" alt="Ashika Sherpa Photo">
     <div class="about-text">
       <p>Hello World! I'm Ashika Sherpa from Nepal, the land of hills and flowing springs in the lap of the Himalayas. I have a passion for business, technology, and entrepreneurship. I aim to become an entrepreneur, enjoy life’s adventures, and continuously learn new things.</p>
