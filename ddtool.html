@@ -38,7 +38,7 @@ th {
 }
 
 .highlight {
-  background: #ffd6d6;
+  background-color: #ffd6d6;
 }
 </style>
 </head>
@@ -58,7 +58,8 @@ th {
 </div>
 
 <div class="card">
-  <h3>Full Dataset</h3>
+  <h3>Full Dataset (Anomalies Highlighted)</h3>
+  <p><b>Note:</b> Red rows indicate anomalous records.</p>
   <div id="fullTable"></div>
 </div>
 
@@ -80,6 +81,7 @@ th {
 let rawData = [];
 let headers = [];
 let chartInstance = null;
+let anomalyIndexSet = new Set();
 
 document.getElementById("csvFile").addEventListener("change", handleFile);
 
@@ -101,8 +103,8 @@ function parseCSV(text) {
   });
 
   computeStats();
-  renderFullTable();
   detectAnomalies();
+  renderFullTable();
   setupChart();
 }
 
@@ -133,26 +135,12 @@ function computeStats() {
   document.getElementById("stats").innerHTML = html;
 }
 
-function renderFullTable() {
-  let html = "<table><tr>";
-  headers.forEach(h => html += `<th>${h}</th>`);
-  html += "</tr>";
-
-  rawData.forEach(row => {
-    html += "<tr>";
-    headers.forEach(h => html += `<td>${row[h]}</td>`);
-    html += "</tr>";
-  });
-
-  html += "</table>";
-  document.getElementById("fullTable").innerHTML = html;
-}
-
 function detectAnomalies() {
+  anomalyIndexSet.clear();
   let anomalyRows = [];
   let anomalyCount = 0;
 
-  rawData.forEach(row => {
+  rawData.forEach((row, index) => {
     let isAnomaly = false;
 
     headers.forEach(h => {
@@ -171,6 +159,7 @@ function detectAnomalies() {
     if (isAnomaly) {
       anomalyCount++;
       anomalyRows.push(row);
+      anomalyIndexSet.add(index);
     }
   });
 
@@ -189,6 +178,22 @@ function detectAnomalies() {
 
   html += "</table>";
   document.getElementById("anomalyTable").innerHTML = html;
+}
+
+function renderFullTable() {
+  let html = "<table><tr>";
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += "</tr>";
+
+  rawData.forEach((row, index) => {
+    const cls = anomalyIndexSet.has(index) ? "highlight" : "";
+    html += `<tr class="${cls}">`;
+    headers.forEach(h => html += `<td>${row[h]}</td>`);
+    html += "</tr>";
+  });
+
+  html += "</table>";
+  document.getElementById("fullTable").innerHTML = html;
 }
 
 function setupChart() {
