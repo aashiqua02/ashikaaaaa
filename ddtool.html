@@ -81,7 +81,6 @@ th {
 let rawData = [];
 let headers = [];
 let chartInstance = null;
-let anomalyIndexSet = new Set();
 
 document.getElementById("csvFile").addEventListener("change", handleFile);
 
@@ -99,6 +98,7 @@ function parseCSV(text) {
     const values = r.split(",");
     let obj = {};
     headers.forEach((h, i) => obj[h] = values[i]);
+    obj.__anomaly = false; // reset flag
     return obj;
   });
 
@@ -136,11 +136,10 @@ function computeStats() {
 }
 
 function detectAnomalies() {
-  anomalyIndexSet.clear();
-  let anomalyRows = [];
   let anomalyCount = 0;
+  let anomalyRows = [];
 
-  rawData.forEach((row, index) => {
+  rawData.forEach(row => {
     let isAnomaly = false;
 
     headers.forEach(h => {
@@ -157,9 +156,9 @@ function detectAnomalies() {
     });
 
     if (isAnomaly) {
+      row.__anomaly = true;
       anomalyCount++;
       anomalyRows.push(row);
-      anomalyIndexSet.add(index);
     }
   });
 
@@ -185,8 +184,8 @@ function renderFullTable() {
   headers.forEach(h => html += `<th>${h}</th>`);
   html += "</tr>";
 
-  rawData.forEach((row, index) => {
-    const cls = anomalyIndexSet.has(index) ? "highlight" : "";
+  rawData.forEach(row => {
+    const cls = row.__anomaly ? "highlight" : "";
     html += `<tr class="${cls}">`;
     headers.forEach(h => html += `<td>${row[h]}</td>`);
     html += "</tr>";
