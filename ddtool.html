@@ -25,6 +25,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  font-size: 14px;
 }
 
 th, td {
@@ -57,6 +58,11 @@ th {
 </div>
 
 <div class="card">
+  <h3>Full Dataset</h3>
+  <div id="fullTable"></div>
+</div>
+
+<div class="card">
   <h3>Anomalous Records (Z-score ≥ 3)</h3>
   <p><b>Total Records:</b> <span id="totalCount">0</span></p>
   <p><b>Anomalous Records:</b> <span id="anomalyCount">0</span></p>
@@ -65,6 +71,7 @@ th {
 
 <div class="card">
   <h3>Visualization</h3>
+  <label>Select Numeric Column:</label>
   <select id="chartColumn"></select>
   <canvas id="chart"></canvas>
 </div>
@@ -94,6 +101,7 @@ function parseCSV(text) {
   });
 
   computeStats();
+  renderFullTable();
   detectAnomalies();
   setupChart();
 }
@@ -123,6 +131,21 @@ function computeStats() {
 
   html += "</table>";
   document.getElementById("stats").innerHTML = html;
+}
+
+function renderFullTable() {
+  let html = "<table><tr>";
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += "</tr>";
+
+  rawData.forEach(row => {
+    html += "<tr>";
+    headers.forEach(h => html += `<td>${row[h]}</td>`);
+    html += "</tr>";
+  });
+
+  html += "</table>";
+  document.getElementById("fullTable").innerHTML = html;
 }
 
 function detectAnomalies() {
