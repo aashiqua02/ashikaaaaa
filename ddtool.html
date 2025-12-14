@@ -113,6 +113,17 @@
 
   <!-- Visualization Section -->
   <div class="card">
+    <h2>4.1 Learning Notes: Understanding the Analysis</h2>
+    <p class="tooltip">
+      <b>Mean:</b> The average value of a numeric column. It represents the central tendency of the data.<br><br>
+      <b>Standard Deviation (SD):</b> Measures how much the values deviate from the mean. A higher SD means data is more spread out.<br><br>
+      <b>Z-Score:</b> Shows how far a value is from the mean in terms of standard deviations.<br>
+      Formula: Z = (value − mean) / standard deviation<br><br>
+      <b>Anomalous Data:</b> Values with |Z-score| ≥ 3 are considered anomalies because they are far from normal behavior.
+    </p>
+  </div>
+
+  <div class="card">
     <h2>5. Data Visualization</h2>
     <label>Select Numeric Column:</label><br />
     <select id="chartColumn" onchange="drawChart()"></select>
