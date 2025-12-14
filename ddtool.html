@@ -106,9 +106,12 @@
   <div class="card">
     <h2>4. Anomalous Records (Z-Score Method)</h2>
     <p class="tooltip">
-      Rows highlighted in red contain values with |Z-score| ≥ 3 (mean ± 3 × standard deviation).
+      Records with |Z-score| ≥ 3 are considered anomalous. They are separated below for clear identification.
     </p>
+    <p><b>Total Records:</b> <span id="totalCount">0</span></p>
+    <p><b>Anomalous Records:</b> <span id="anomalyCount">0</span></p>
     <div id="anomalyTable"></div>
+  </div>
   </div>
 
   <!-- Visualization Section -->
@@ -203,9 +206,8 @@
   }
 
   function detectAnomalies() {
-    let html = '<table><tr>';
-    headers.forEach(h => html += `<th>${h}</th>`);
-    html += '</tr>';
+    let anomalyRows = [];
+    let normalRows = [];
 
     rawData.forEach(row => {
       let isAnomaly = false;
@@ -218,6 +220,28 @@
           const z = (row[h] - mean) / sd;
           if (Math.abs(z) >= 3) isAnomaly = true;
         }
+      });
+
+      if (isAnomaly) anomalyRows.push(row);
+      else normalRows.push(row);
+    });
+
+    document.getElementById('totalCount').textContent = rawData.length;
+    document.getElementById('anomalyCount').textContent = anomalyRows.length;
+
+    let html = '<table><tr>';
+    headers.forEach(h => html += `<th>${h}</th>`);
+    html += '</tr>';
+
+    anomalyRows.forEach(row => {
+      html += '<tr class="highlight">';
+      headers.forEach(h => html += `<td>${row[h]}</td>`);
+      html += '</tr>';
+    });
+
+    html += '</table>';
+    document.getElementById('anomalyTable').innerHTML = html;
+  }
       });
 
       html += `<tr class="${isAnomaly ? 'highlight' : ''}">`;
